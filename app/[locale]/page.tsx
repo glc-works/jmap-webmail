@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { Sidebar } from "@/components/layout/sidebar";
+import { useBrandingStore } from "@/stores/branding-store";
 import { EmailList } from "@/components/email/email-list";
 import { EmailViewer } from "@/components/email/email-viewer";
 import { EmailComposer } from "@/components/email/email-composer";
@@ -204,9 +205,12 @@ export default function Home() {
     handlers: keyboardHandlers,
   });
 
+  const brandName = useBrandingStore((s) => s.branding?.name ?? null);
+
   // Update page title based on context
   useEffect(() => {
-    let title = tCommon('app_title');
+    const appTitle = brandName ?? tCommon('app_title');
+    let title = appTitle;
 
     if (showComposer) {
       // Composing email
@@ -216,11 +220,11 @@ export default function Home() {
         replyAll: t('email_composer.reply_all'),
         forward: t('email_composer.forward'),
       }[composerMode] || t('email_composer.new_message');
-      title = `${modeText} - ${tCommon('app_title')}`;
+      title = `${modeText} - ${appTitle}`;
     } else if (selectedEmail) {
       // Reading email
       const subject = selectedEmail.subject || t('email_viewer.no_subject');
-      title = `${subject} - ${tCommon('app_title')}`;
+      title = `${subject} - ${appTitle}`;
     } else if (selectedMailbox && mailboxes.length > 0) {
       // Mailbox view
       const mailbox = mailboxes.find(mb => mb.id === selectedMailbox);
@@ -228,13 +232,13 @@ export default function Home() {
         const mailboxName = mailbox.name;
         const unreadCount = mailbox.unreadEmails || 0;
         title = unreadCount > 0
-          ? `${mailboxName} (${unreadCount}) - ${tCommon('app_title')}`
-          : `${mailboxName} - ${tCommon('app_title')}`;
+          ? `${mailboxName} (${unreadCount}) - ${appTitle}`
+          : `${mailboxName} - ${appTitle}`;
       }
     }
 
     document.title = title;
-  }, [showComposer, composerMode, selectedEmail, selectedMailbox, mailboxes, t, tCommon]);
+  }, [showComposer, composerMode, selectedEmail, selectedMailbox, mailboxes, t, tCommon, brandName]);
 
   // Check auth on mount
   useEffect(() => {

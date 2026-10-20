@@ -47,6 +47,7 @@ import { useResizeHandle } from "@/hooks/use-resize-handle";
 import { toast } from "@/stores/toast-store";
 import { debug } from "@/lib/debug";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { BrandMark } from "@/components/layout/brand-mark";
 
 interface SidebarProps {
   mailboxes: Mailbox[];
@@ -961,6 +962,12 @@ export function Sidebar({
       )}
       style={!isCollapsed ? { width: `var(--sidebar-width, ${sidebarWidth}px)` } : undefined}
     >
+      {/* Tenant brand (white-label); renders nothing without branding */}
+      <BrandMark
+        compact={isCollapsed}
+        className={cn("px-4 pt-3", isCollapsed && "lg:px-2 lg:justify-center")}
+      />
+
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
         <Button

@@ -5,22 +5,13 @@ import { useAuthStore } from '@/stores/auth-store';
 import { useBrandingStore } from '@/stores/branding-store';
 import { useThemeStore } from '@/stores/theme-store';
 import { brandColorVars, BRAND_CSS_VARS } from '@/lib/branding';
+import { getDefaultFaviconHref, getIconLinks } from '@/lib/favicon';
 
-const ORIGINAL_HREF = 'brandingOriginalHref';
-
-/** Swaps every <link rel="icon"> to the brand favicon, or restores the original. */
+/** Points every <link rel="icon"> at the brand favicon, or back to the default. */
 function applyFavicon(url: string | null) {
-  const links = document.querySelectorAll<HTMLLinkElement>('link[rel~="icon"]');
-  links.forEach((link) => {
-    if (url) {
-      if (link.dataset[ORIGINAL_HREF] === undefined) {
-        link.dataset[ORIGINAL_HREF] = link.getAttribute('href') ?? '';
-      }
-      link.href = url;
-    } else if (link.dataset[ORIGINAL_HREF] !== undefined) {
-      link.setAttribute('href', link.dataset[ORIGINAL_HREF]!);
-      delete link.dataset[ORIGINAL_HREF];
-    }
+  getIconLinks().forEach((link) => {
+    const fallback = getDefaultFaviconHref(link);
+    link.href = url ?? fallback;
   });
 }
 

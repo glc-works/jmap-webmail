@@ -36,7 +36,7 @@ describe('BrandingProvider', () => {
     render(<BrandingProvider><div /></BrandingProvider>);
     await waitFor(() => expect(useBrandingStore.getState().enabled).toBe(false));
     expect(root.style.getPropertyValue('--color-primary')).toBe('');
-    expect(document.querySelector('link[rel="icon"]')?.getAttribute('href')).toBe('/icon.svg');
+    expect(document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.href).toMatch(/\/icon\.svg$/);
   });
 
   it('applies the host brand colour and favicon, and restores them when cleared', async () => {
@@ -49,7 +49,7 @@ describe('BrandingProvider', () => {
 
     act(() => useBrandingStore.setState({ branding: null }));
     expect(root.style.getPropertyValue('--color-primary')).toBe('');
-    expect(document.querySelector('link[rel="icon"]')?.getAttribute('href')).toBe('/icon.svg');
+    expect(document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.href).toMatch(/\/icon\.svg$/);
   });
 
   it('skips a primary colour without enough contrast in dark mode', async () => {

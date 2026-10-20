@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { getDefaultFaviconHref } from "@/lib/favicon";
 
 const SIZE = 32;
 
-export function useFaviconBadge(count: number) {
+/**
+ * Draws an unread-count badge on the tab favicon.
+ *
+ * `baseHref` overrides the icon the badge is drawn on (white-label brand
+ * favicon); without it the page's default icon is used. A cross-origin base
+ * icon that cannot be read into the canvas yields a badge-only icon.
+ */
+export function useFaviconBadge(count: number, baseHref?: string | null) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const baseLinkRef = useRef<HTMLLinkElement | null>(null);
@@ -19,21 +27,29 @@ export function useFaviconBadge(count: number) {
     // already tracks changes — it ignores new <link> nodes added dynamically.
     // Changing href is safe: the React reconciler crash ("parentNode is null")
     // only happens when a tracked node is *removed* from the DOM, not when
-    // its attributes change. On cleanup we restore the original href.
+    // its attributes change. On cleanup we restore the base href.
     const baseLink = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
     if (!baseLink?.href) return;
 
+    // Record the pristine icon before anything below changes the href.
+    const defaultHref = getDefaultFaviconHref(baseLink);
+    const base = baseHref || defaultHref;
     baseLinkRef.current = baseLink;
-    originalHrefRef.current = baseLink.href;
+    originalHrefRef.current = base;
+    imageLoaded.current = false;
+    imageRef.current = null;
+    if (countRef.current <= 0) baseLink.href = base;
 
     const canvas = document.createElement("canvas");
     canvas.width = SIZE;
     canvas.height = SIZE;
     canvasRef.current = canvas;
 
+    let cancelled = false;
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
+      if (cancelled) return;
       imageLoaded.current = true;
       imageRef.current = img;
       if (countRef.current > 0) {
@@ -41,16 +57,21 @@ export function useFaviconBadge(count: number) {
       }
     };
     img.onerror = () => {
+      if (cancelled) return;
       imageLoaded.current = true;
+      if (countRef.current > 0) {
+        drawBadge(canvas, null, countRef.current, baseLink);
+      }
     };
-    img.src = originalHrefRef.current;
+    img.src = base;
 
     return () => {
+      cancelled = true;
       if (baseLinkRef.current) {
         baseLinkRef.current.href = originalHrefRef.current;
       }
     };
-  }, []);
+  }, [baseHref]);
 
   useEffect(() => {
     const baseLink = baseLinkRef.current;

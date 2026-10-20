@@ -103,7 +103,8 @@ export default function Home() {
   const contactStore = useContactStore();
 
   const inboxUnread = mailboxes.find(m => m.role === "inbox")?.unreadEmails || 0;
-  useFaviconBadge(inboxUnread);
+  const brandFavicon = useBrandingStore((s) => s.branding?.faviconUrl ?? null);
+  useFaviconBadge(inboxUnread, brandFavicon);
 
   // Keyboard shortcuts handlers
   const keyboardHandlers = useMemo(() => ({

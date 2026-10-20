@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Everywhere",
     "scope_this_folder": "This folder",
     "include_trash_junk": "+ Trash & Junk"
+  },
+  "branding": {
+    "logo_alt": "{name} logo",
+    "support_prefix": "Need help? Contact"
   }
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## Unreleased
+
+- **Optional white-label branding per tenant.** Set `BRANDING_URL` to a
+  branding service and the login page, sidebar, tab title, favicon and
+  primary colour follow the brand of the webmail hostname, then of the
+  signed-in account's email domain. Lookups are server-side, cached
+  (`BRANDING_CACHE_TTL`, default 300 s), time out after 2 s and fall
+  back to the default look. Logo URLs must be http(s), colours hex, and
+  the login message is plain text. Nothing changes when the variable is
+  unset.
+
 ## 1.7.3 (2026-09-20)
 
 - **Dependency maintenance.** Next.js 16.3.5 (adds the CSP nonce to

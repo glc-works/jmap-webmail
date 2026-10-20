@@ -1511,5 +1511,9 @@
     "scope_everywhere": "En todas partes",
     "scope_this_folder": "Esta carpeta",
     "include_trash_junk": "+ Papelera y Spam"
+  },
+  "branding": {
+    "logo_alt": "Logotipo de {name}",
+    "support_prefix": "¿Necesitas ayuda? Contacta con"
   }
 }

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/stores/auth-store";
 import { useConfig } from "@/hooks/use-config";
+import { useBrandingStore } from "@/stores/branding-store";
 import { cn } from "@/lib/utils";
 import { Mail, AlertCircle, Loader2, X, Info, Eye, EyeOff, LogIn } from "lucide-react";
 import { discoverOAuth, type OAuthMetadata } from "@/lib/oauth/discovery";
@@ -16,9 +17,15 @@ import { generateCodeVerifier, generateCodeChallenge, generateState } from "@/li
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslations("login");
+  const tBrand = useTranslations("branding");
   const params = useParams();
   const { login, isLoading, error, clearError, isAuthenticated } = useAuthStore();
   const { appName, jmapServerUrl: serverUrl, oauthEnabled, oauthClientId, oauthIssuerUrl, oauthScopes, oauthOnly, rememberMeEnabled, isLoading: configLoading, error: configError } = useConfig();
+  const branding = useBrandingStore((s) => s.branding);
+  const loadBrandingForEmail = useBrandingStore((s) => s.loadForEmail);
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
+  const displayName = branding?.name ?? appName;
+  const logoUrl = branding?.logoUrl && branding.logoUrl !== failedLogoUrl ? branding.logoUrl : null;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -49,9 +56,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (serverUrl) {
-      document.title = appName;
+      document.title = displayName;
     }
-  }, [appName, serverUrl]);
+  }, [displayName, serverUrl]);
 
   useEffect(() => {
     try {
@@ -313,12 +320,29 @@ export default function LoginPage() {
       <div className="w-full max-w-sm mx-auto px-4">
         {/* Logo */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 mb-6 shadow-lg shadow-primary/5">
-            <Mail className="w-10 h-10 text-primary" />
-          </div>
+          {logoUrl ? (
+            /* Tenant logo from white-label branding (http(s) URL, validated server-side) */
+            <img
+              src={logoUrl}
+              alt={tBrand("logo_alt", { name: displayName })}
+              className="mx-auto mb-6 h-20 w-auto max-w-[16rem] object-contain"
+              referrerPolicy="no-referrer"
+              onError={() => setFailedLogoUrl(logoUrl)}
+            />
+          ) : (
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 mb-6 shadow-lg shadow-primary/5">
+              <Mail className="w-10 h-10 text-primary" />
+            </div>
+          )}
           <h1 className="text-3xl font-light text-foreground tracking-tight">
-            {appName}
+            {displayName}
           </h1>
+          {branding?.loginMessage && (
+            /* Plain text only: React escapes it; never rendered as HTML. */
+            <p className="mt-3 text-sm text-muted-foreground whitespace-pre-line break-words" data-testid="branding-login-message">
+              {branding.loginMessage}
+            </p>
+          )}
         </div>
 
         {/* Session Expired Banner */}
@@ -378,6 +402,7 @@ export default function LoginPage() {
                 onChange={handleUsernameChange}
                 onFocus={handleUsernameFocus}
                 onKeyDown={handleKeyDown}
+                onBlur={() => void loadBrandingForEmail(formData.username)}
                 className="h-12 px-4 bg-secondary/50 border-border/50 focus:bg-secondary focus:border-primary/50 transition-colors"
                 placeholder={t("username_placeholder")}
                 required
@@ -565,6 +590,18 @@ export default function LoginPage() {
             </div>
           )}
         </form>
+
+        {branding?.supportEmail && (
+          <p className="mt-8 text-center text-xs text-muted-foreground" data-testid="branding-support">
+            {tBrand("support_prefix")}{" "}
+            <a
+              href={`mailto:${branding.supportEmail}`}
+              className="underline hover:no-underline text-foreground"
+            >
+              {branding.supportEmail}
+            </a>
+          </p>
+        )}
       </div>
     </div>
   );

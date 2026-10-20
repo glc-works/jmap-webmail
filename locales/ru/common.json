@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Везде",
     "scope_this_folder": "Эта папка",
     "include_trash_junk": "+ Корзина и Спам"
+  },
+  "branding": {
+    "logo_alt": "Логотип {name}",
+    "support_prefix": "Нужна помощь? Пишите на"
   }
 }

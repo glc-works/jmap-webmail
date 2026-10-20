@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Em todo o lado",
     "scope_this_folder": "Esta pasta",
     "include_trash_junk": "+ Lixo e Spam"
+  },
+  "branding": {
+    "logo_alt": "Logótipo de {name}",
+    "support_prefix": "Precisa de ajuda? Contacte"
   }
 }

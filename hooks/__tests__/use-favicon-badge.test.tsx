@@ -86,4 +86,26 @@ describe('useFaviconBadge', () => {
 
     expect(link().href).toBe(originalHref);
   });
+
+  it('draws on the brand favicon and falls back to it when the count is zero', async () => {
+    const brand = 'https://cdn.example.test/fav.png';
+    const { rerender } = renderHook(({ count, base }) => useFaviconBadge(count, base), {
+      initialProps: { count: 0, base: brand as string | null },
+    });
+    await act(async () => {});
+    expect(link().href).toBe(brand);
+
+    rerender({ count: 2, base: brand });
+    await act(async () => {});
+    expect(link().href).toBe('data:image/png;base64,badged');
+
+    rerender({ count: 0, base: brand });
+    await act(async () => {});
+    expect(link().href).toBe(brand);
+
+    // Brand removed -> back to the page's default icon.
+    rerender({ count: 0, base: null });
+    await act(async () => {});
+    expect(link().href).toBe(originalHref);
+  });
 });

@@ -222,6 +222,30 @@ SESSION_SECRET=your-secret-key    # Generate with: openssl rand -base64 32
 
 When set, a "Remember me" checkbox appears on the login form. Credentials are encrypted with AES-256-GCM and stored in an httpOnly cookie (30-day expiry).
 
+#### White-label branding (optional)
+
+One deployment can serve several organisations, each with its own name, logo, favicon and accent colour, looked up at runtime from an external branding service:
+
+```env
+BRANDING_URL=https://panel.example.com/api/public/branding
+BRANDING_CACHE_TTL=300            # seconds, default 300; 0 disables caching
+```
+
+The webmail server calls `GET {BRANDING_URL}?host=<request hostname>` for the login page (so each tenant can use its own webmail hostname), `?domain=<email domain>` once the user has typed an address or signed in. The service answers `200` with:
+
+```json
+{
+  "name": "Example Corp Mail",
+  "logo_url": "https://cdn.example.com/logo.svg",
+  "favicon_url": null,
+  "primary_color": "#0055aa",
+  "login_message": "Welcome to Example Corp webmail",
+  "support_email": "it@example.com"
+}
+```
+
+or `404` for unknown hosts/domains. Lookups run server-side with a 2-second timeout and are cached in memory; any failure falls back to the default look. Only the hostname or email domain is sent. Data is validated before use: logo and favicon must be `http(s)` URLs (use `https` — the CSP only allows HTTPS images), `primary_color` must be `#rgb`/`#rrggbb` and is applied only where it keeps a 3:1 contrast with the light or dark background, and `login_message` is shown as plain text. When `BRANDING_URL` is unset, nothing changes.
+
 ### Development
 
 ```bash

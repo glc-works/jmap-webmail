@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Wszędzie",
     "scope_this_folder": "Ten folder",
     "include_trash_junk": "+ Kosz i Spam"
+  },
+  "branding": {
+    "logo_alt": "Logo {name}",
+    "support_prefix": "Potrzebujesz pomocy? Napisz na"
   }
 }

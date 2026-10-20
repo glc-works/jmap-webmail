@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Partout",
     "scope_this_folder": "Ce dossier",
     "include_trash_junk": "+ Corbeille et Spam"
+  },
+  "branding": {
+    "logo_alt": "Logo de {name}",
+    "support_prefix": "Besoin d'aide ? Contactez"
   }
 }

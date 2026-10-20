@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Overal",
     "scope_this_folder": "Deze map",
     "include_trash_junk": "+ Prullenbak & Spam"
+  },
+  "branding": {
+    "logo_alt": "Logo van {name}",
+    "support_prefix": "Hulp nodig? Neem contact op met"
   }
 }

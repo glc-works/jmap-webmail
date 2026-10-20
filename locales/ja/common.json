@@ -1511,5 +1511,9 @@
     "scope_everywhere": "すべて",
     "scope_this_folder": "このフォルダー",
     "include_trash_junk": "+ ゴミ箱と迷惑メール"
+  },
+  "branding": {
+    "logo_alt": "{name} のロゴ",
+    "support_prefix": "お困りの場合のお問い合わせ先:"
   }
 }

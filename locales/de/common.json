@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Überall",
     "scope_this_folder": "Dieser Ordner",
     "include_trash_junk": "+ Papierkorb & Spam"
+  },
+  "branding": {
+    "logo_alt": "{name}-Logo",
+    "support_prefix": "Hilfe benötigt? Kontakt:"
   }
 }

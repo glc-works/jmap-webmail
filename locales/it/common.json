@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Ovunque",
     "scope_this_folder": "Questa cartella",
     "include_trash_junk": "+ Cestino e Spam"
+  },
+  "branding": {
+    "logo_alt": "Logo di {name}",
+    "support_prefix": "Serve aiuto? Contatta"
   }
 }

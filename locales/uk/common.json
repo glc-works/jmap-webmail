@@ -1511,5 +1511,9 @@
     "scope_everywhere": "Скрізь",
     "scope_this_folder": "Ця папка",
     "include_trash_junk": "+ Кошик і Спам"
+  },
+  "branding": {
+    "logo_alt": "Логотип {name}",
+    "support_prefix": "Потрібна допомога? Пишіть на"
   }
 }
